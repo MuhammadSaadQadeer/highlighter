@@ -1,13 +1,20 @@
 {
-  "name": "Strong Password Generator",
+  "name": "Highlighter",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "Strong password generator",
+  "description": "I will highlight and create a separate file for you whatever you will highlight on the web",
   "icons": {
       "512": "logo512.png"
   },
   "browser_action": {
       "default_icon": "logo512.png",
       "default_popup": "popup.html"
-  }
+  },
+  "background": {
+    "scripts": ["app/background.js"]
+},
+"permissions": [
+  "webRequest",
+  "*://developer.mozilla.org/"
+]
 }
