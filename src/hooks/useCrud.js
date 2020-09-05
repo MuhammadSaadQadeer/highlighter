@@ -1,7 +1,9 @@
 import { usePouchDb } from "./usePouchDb";
+import { useState } from "react";
 
 export function useCrud() {
-  const { db } = usePouchDb();
+  const db = usePouchDb();
+  const [todos, setTodos] = useState([])
 
   function addTodo(text) {
     var todo = {
@@ -17,11 +19,15 @@ export function useCrud() {
     });
   }
 
-  function showTodos() {
-    db.allDocs({ include_docs: true, descending: true }, function (err, doc) {
-      console.log(doc.rows);
-      setTodos(doc.rows);
-    });
+  async function showTodos() {
+   const result =  await db.allDocs(
+      { include_docs: true, descending: true },
+      (err, doc) => {
+        setTodos(doc.rows)
+        return doc.rows
+      }
+    );
+    return result;  
   }
 
   function deleteTodo(todo) {
@@ -30,5 +36,5 @@ export function useCrud() {
     showTodos();
   }
 
-
+  return [addTodo, showTodos, deleteTodo, todos];
 }

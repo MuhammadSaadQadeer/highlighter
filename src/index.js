@@ -3,13 +3,13 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { TodoContext } from "./ctx/TodoCtx";
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <TodoContext.Provider value={[{ id: 1, text: "sometext" }]}>
+    
       <App  />
-    </TodoContext.Provider>
+    
   </React.StrictMode>,
   document.getElementById("root")
 );
