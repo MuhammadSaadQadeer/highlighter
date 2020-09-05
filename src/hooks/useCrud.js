@@ -31,9 +31,9 @@ export function useCrud() {
   }
 
   function deleteTodo(todo) {
-    console.log("tod", todo);
-    db.remove(todo.item);
-    showTodos();
+    console.log('BAZ', todo)
+    db.remove(todo);
+   // showTodos();
   }
 
   return [addTodo, showTodos, deleteTodo, todos];

@@ -6,6 +6,20 @@
   display: flex
 }
 
+input:focus {
+  border-color: #2ec1ac;
+  border-radius: 4px;
+  outline: none ;
+}
+
+tr:nth-child(even){
+  background-color:rgb(242, 242, 242);
+}
+
+tr:nth-child(odd){
+  background-color:#CCC;
+}
+
 button:focus {
   border: none;
   outline: none ;

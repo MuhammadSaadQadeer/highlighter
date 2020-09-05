@@ -7,76 +7,116 @@ import { usePouchDb } from "./hooks/usePouchDb";
 
 function App() {
   const [addTodo, showTodos, deleteTodo] = useCrud();
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const db = usePouchDb()
+  const db = usePouchDb();
 
-  const Item = (item) => {
+  const Item = ({ doc }) => {
     return (
-      <div style={{ display: "grid", gridTemplateColumns: "80% 10%" }}>
-        <div style={{ overflowWrap: "anywhere" }}>{item.doc.title}</div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-          }}
-        >
-          <Button text={"Done"} id={"done"} />
-          <Button
-            onClick={(item) => deleteTodo(item)}
-            text={"Delete"}
-            id={"delete"}
-          />
-        </div>
-      </div>
+      <>
+        <tr>
+          <td>
+            {console.log(doc)}
+            <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
+              <div style={{ overflowWrap: "anywhere" }}>{doc.title}</div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "flex-start",
+                  marginLeft: 10,
+                }}
+              ></div>
+            </div>
+          </td>
+          <td>
+            <Button text={"Done"} id={"done"} />
+          </td>
+          <td>
+            <Button
+              onClick={() => {deleteTodo(doc);updateTodos();}}
+              text={"Delete"}
+              id={"delete"}
+            />
+          </td>
+        </tr>
+      </>
     );
   };
 
-  useEffect(() => {
 
-    
-      db.allDocs(
-        { include_docs: true, descending: true },
-        (err, doc) => {
-          console.log('doc', doc.rows)
-          setTodos(doc.rows)
-          console.log('FOO', todos)
-        }
-      );
+  function updateTodos(){
+    db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
+      setTodos(doc.rows);
+    });
+  }
+
+  useEffect(() => {
+    updateTodos();
+  }, []);
+
   
+
+  useEffect(() => {
   }, [todos]);
   function handleChange(e) {
-    console.log(e.target.value);
     setInputValue(e.target.value);
   }
 
   return (
-    <div style={{ margin: 10, padding: 10 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "80% 10%" }}>
+    <div
+      style={{
+        width: 500,
+        height: 500,
+        margin: 5,
+        padding: 5,
+      }}
+    >
+      <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
         <input
-          key={"uuid"}
           type="text"
           onChange={(e) => handleChange(e)}
+          placeholder={"Add Todo Item..."}
           value={inputValue}
-          style={{ width: "100%", height: 30 }}
+          style={{
+            width: "100%",
+            height: 25,
+            paddingLeft: 4,
+            paddingRight: 4,
+            outline: "none",
+            borderRadius: 4,
+            borderColor:"lightgray"
+          }}
         />
-        <div style={{ display: "flex", alignItems: "center", marginLeft: 20 }}>
-          <Button onClick={() => addTodo(inputValue)} text={"Add"} />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginLeft: 20,
+            height: 30,
+          }}
+        >
+          <button
+            id={"add-todo"}
+            onClick={() => {addTodo(inputValue);updateTodos();setInputValue("")}}
+            style={{
+              borderRadius: 4,
+              backgroundColor: "#2ec1ac",
+              padding: 8,
+              color: "white",
+              border: "none",
+              width: 100,
+            }}
+          >
+            Add
+          </button>
         </div>
       </div>
-      <TodoContext.Provider value={{ todos, updateTodos:()=>{} }}>
-        <div>
-          {/* <div style={{ margin: 10, width: "100%" }}>
-            {todos && todos.rows.map((item) => {
-              return (
-                <div style={{ padding: 10 }}>
-                  <Item item={item} />
-                </div>
-              );
-            })}
-          </div> */}
-        </div>
+      <hr />
+      <TodoContext.Provider value={{ todos, updateTodos: () => {} }}>
+        <table style={{width:500, borderCollapse: "separate", borderSpacing: "0 10px" , border:"1px solid", borderRadius:4,padding:7, borderColor:"lightgray"}}>
+          {todos && todos.length ? todos.map((item) => <Item {...item} />): <span style={{display:"flex", justifyContent:"center", alignItems:"center", color:"gray"}}>You have no todos</span>}
+        </table>
       </TodoContext.Provider>
     </div>
   );
