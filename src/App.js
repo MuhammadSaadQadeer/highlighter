@@ -24,6 +24,7 @@ function App() {
                 letterSpacing: 0.5,
                 lineHeight: "20px",
                 marginLeft: "10px",
+                textDecoration: doc.completed ? 'line-through':''
               }}
             >
               {doc.title}
@@ -41,15 +42,28 @@ function App() {
             </span>
           </td>
           <td>
-            <span
+            {
+              !doc.completed ? <span
               style={{ marginRight: 10 }}
               onClick={() => {
-                deleteTodo(doc);
+                doc.completed = true
+                db.put(doc);
                 updateTodos();
               }}
             >
               <img className={"action-icon"} src={require("./done_2.png")} />
+            </span> : <span
+              style={{ marginRight: 10 }}
+              onClick={() => {
+                doc.completed = false
+                db.put(doc);
+                updateTodos();
+              }}
+            >
+              <img className={"action-icon"} src={require("./undo.png")} />
             </span>
+            }
+            
           </td>
         </tr>
       </>
@@ -78,37 +92,29 @@ function App() {
         height: 500,
         margin: 5,
         padding: 5,
+        marginTop: 20,
       }}
     >
       <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
         <input
-         onKeyDown={ (e) => {
-          if (e.key === 'Enter') {
-            addTodo(inputValue);
-          updateTodos();
-          setInputValue("");
-          }
-        }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              addTodo(inputValue);
+              updateTodos();
+              setInputValue("");
+            }
+          }}
           type="text"
           onChange={(e) => handleChange(e)}
           placeholder={"Add Todo Item..."}
           value={inputValue}
-          style={{
-            width: "100%",
-            height: 25,
-            paddingLeft: 4,
-            paddingRight: 4,
-            outline: "none",
-            borderRadius: 4,
-            borderColor: "lightgray",
-          }}
         />
         <div
           style={{
             display: "flex",
             alignItems: "center",
             marginLeft: 20,
-            height: 30,
+            height: 36,
           }}
         >
           <button
@@ -125,6 +131,7 @@ function App() {
               color: "white",
               border: "none",
               width: 100,
+              height: 36,
             }}
           >
             Add
@@ -142,7 +149,7 @@ function App() {
             borderRadius: 4,
             borderColor: "lightgray",
             paddingLeft: 7,
-    paddingRight: 7
+            paddingRight: 7,
           }}
         >
           {todos && todos.length ? (
