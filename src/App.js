@@ -15,37 +15,48 @@ function App() {
     return (
       <>
         <tr>
-          <td>
-            {console.log(doc)}
-            <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
-              <div style={{ overflowWrap: "anywhere" }}>{doc.title}</div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "flex-start",
-                  marginLeft: 10,
-                }}
-              ></div>
-            </div>
+          <td style={{ width: "100%" }}>
+            <p
+              style={{
+                margin: 0,
+
+                padding: 5,
+                letterSpacing: 0.5,
+                lineHeight: "20px",
+                marginLeft: "10px",
+              }}
+            >
+              {doc.title}
+            </p>
           </td>
           <td>
-            <Button text={"Done"} id={"done"} />
+            <span
+              style={{ marginRight: 10 }}
+              onClick={() => {
+                deleteTodo(doc);
+                updateTodos();
+              }}
+            >
+              <img className={"action-icon"} src={require("./delete.png")} />
+            </span>
           </td>
           <td>
-            <Button
-              onClick={() => {deleteTodo(doc);updateTodos();}}
-              text={"Delete"}
-              id={"delete"}
-            />
+            <span
+              style={{ marginRight: 10 }}
+              onClick={() => {
+                deleteTodo(doc);
+                updateTodos();
+              }}
+            >
+              <img className={"action-icon"} src={require("./done_2.png")} />
+            </span>
           </td>
         </tr>
       </>
     );
   };
 
-
-  function updateTodos(){
+  function updateTodos() {
     db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
       setTodos(doc.rows);
     });
@@ -55,10 +66,7 @@ function App() {
     updateTodos();
   }, []);
 
-  
-
-  useEffect(() => {
-  }, [todos]);
+  useEffect(() => {}, [todos]);
   function handleChange(e) {
     setInputValue(e.target.value);
   }
@@ -74,6 +82,13 @@ function App() {
     >
       <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
         <input
+         onKeyDown={ (e) => {
+          if (e.key === 'Enter') {
+            addTodo(inputValue);
+          updateTodos();
+          setInputValue("");
+          }
+        }}
           type="text"
           onChange={(e) => handleChange(e)}
           placeholder={"Add Todo Item..."}
@@ -85,7 +100,7 @@ function App() {
             paddingRight: 4,
             outline: "none",
             borderRadius: 4,
-            borderColor:"lightgray"
+            borderColor: "lightgray",
           }}
         />
         <div
@@ -98,7 +113,11 @@ function App() {
         >
           <button
             id={"add-todo"}
-            onClick={() => {addTodo(inputValue);updateTodos();setInputValue("")}}
+            onClick={() => {
+              addTodo(inputValue);
+              updateTodos();
+              setInputValue("");
+            }}
             style={{
               borderRadius: 4,
               backgroundColor: "#2ec1ac",
@@ -114,8 +133,32 @@ function App() {
       </div>
       <hr />
       <TodoContext.Provider value={{ todos, updateTodos: () => {} }}>
-        <table style={{width:500, borderCollapse: "separate", borderSpacing: "0 10px" , border:"1px solid", borderRadius:4,padding:7, borderColor:"lightgray"}}>
-          {todos && todos.length ? todos.map((item) => <Item {...item} />): <span style={{display:"flex", justifyContent:"center", alignItems:"center", color:"gray"}}>You have no todos</span>}
+        <table
+          style={{
+            width: 500,
+            borderCollapse: "separate",
+            borderSpacing: "0 10px",
+            border: "1px solid",
+            borderRadius: 4,
+            borderColor: "lightgray",
+            paddingLeft: 7,
+    paddingRight: 7
+          }}
+        >
+          {todos && todos.length ? (
+            todos.map((item) => <Item {...item} />)
+          ) : (
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                color: "gray",
+              }}
+            >
+              You have no todos
+            </span>
+          )}
         </table>
       </TodoContext.Provider>
     </div>
