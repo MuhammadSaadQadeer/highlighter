@@ -5,6 +5,9 @@ import { TodoContext } from "./ctx/TodoCtx";
 import { useCrud } from "./hooks/useCrud";
 import { usePouchDb } from "./hooks/usePouchDb";
 
+
+
+
 function App() {
   const [addTodo, showTodos, deleteTodo] = useCrud();
   const [todos, setTodos] = useState(null);
