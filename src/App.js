@@ -24,7 +24,7 @@ function App() {
                 letterSpacing: 0.5,
                 lineHeight: "20px",
                 marginLeft: "10px",
-                textDecoration: doc.completed ? 'line-through':''
+                textDecoration: doc.completed ? "line-through" : "",
               }}
             >
               {doc.title}
@@ -42,28 +42,29 @@ function App() {
             </span>
           </td>
           <td>
-            {
-              !doc.completed ? <span
-              style={{ marginRight: 10 }}
-              onClick={() => {
-                doc.completed = true
-                db.put(doc);
-                updateTodos();
-              }}
-            >
-              <img className={"action-icon"} src={require("./done_2.png")} />
-            </span> : <span
-              style={{ marginRight: 10 }}
-              onClick={() => {
-                doc.completed = false
-                db.put(doc);
-                updateTodos();
-              }}
-            >
-              <img className={"action-icon"} src={require("./undo.png")} />
-            </span>
-            }
-            
+            {!doc.completed ? (
+              <span
+                style={{ marginRight: 10 }}
+                onClick={() => {
+                  doc.completed = true;
+                  db.put(doc);
+                  updateTodos();
+                }}
+              >
+                <img className={"action-icon"} src={require("./done_2.png")} />
+              </span>
+            ) : (
+              <span
+                style={{ marginRight: 10 }}
+                onClick={() => {
+                  doc.completed = false;
+                  db.put(doc);
+                  updateTodos();
+                }}
+              >
+                <img className={"action-icon"} src={require("./undo.png")} />
+              </span>
+            )}
           </td>
         </tr>
       </>
