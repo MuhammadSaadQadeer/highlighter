@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import Button from "./components/Button";
 import { TodoContext } from "./ctx/TodoCtx";
 import { useCrud } from "./hooks/useCrud";
 import { usePouchDb } from "./hooks/usePouchDb";
@@ -19,7 +18,6 @@ function App() {
             <p
               style={{
                 margin: 0,
-
                 padding: 5,
                 letterSpacing: 0.5,
                 lineHeight: "20px",
@@ -146,11 +144,8 @@ function App() {
             width: 500,
             borderCollapse: "separate",
             borderSpacing: "0 10px",
-            border: "1px solid",
             borderRadius: 4,
             borderColor: "lightgray",
-            paddingLeft: 7,
-            paddingRight: 7,
           }}
         >
           {todos && todos.length ? (
