@@ -5,15 +5,16 @@ import { useCrud } from "./hooks/useCrud";
 import { usePouchDb } from "./hooks/usePouchDb";
 
 function App() {
-  const [addTodo, showTodos, deleteTodo] = useCrud();
+  const [addTodo, showTodos, deleteTodo,updateTodo] = useCrud();
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [editDoc, setEditDoc] = useState(null)
   const db = usePouchDb();
 
   const Item = ({ doc }) => {
     return (
       <>
-        <tr>
+        <tr onDoubleClick={()=>{setEditDoc(doc);setInputValue(doc.title)}}>
           <td style={{ width: "100%" }}>
             <p
               style={{
@@ -98,9 +99,15 @@ function App() {
         <input
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              addTodo(inputValue);
+              if(editDoc){
+                editDoc.title = inputValue
+               updateTodo(editDoc)
+              }else {
+                addTodo(inputValue);
+              }
               updateTodos();
               setInputValue("");
+              setEditDoc(null)
             }
           }}
           type="text"
@@ -119,9 +126,16 @@ function App() {
           <button
             id={"add-todo"}
             onClick={() => {
-              addTodo(inputValue);
+              if(editDoc){
+                editDoc.title = inputValue
+               updateTodo(editDoc)
+              }else {
+                addTodo(inputValue);
+              }
+              
               updateTodos();
               setInputValue("");
+              setEditDoc(null)
             }}
             style={{
               borderRadius: 4,
@@ -133,7 +147,7 @@ function App() {
               height: 36,
             }}
           >
-            Add
+            {editDoc ? "Update": "Add"}
           </button>
         </div>
       </div>

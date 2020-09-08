@@ -19,6 +19,17 @@ export function useCrud() {
     });
   }
 
+  function updateTodo(doc){
+    console.log(doc)
+    db.put(doc, function callback(err, result) {
+      console.log(err, result)
+      if (!err) {
+        console.log("Successfully updated a todo!");
+        showTodos();
+      }
+    });
+  }
+
   async function showTodos() {
     const result = await db.allDocs(
       { include_docs: true, descending: true },
@@ -35,5 +46,5 @@ export function useCrud() {
     // showTodos();
   }
 
-  return [addTodo, showTodos, deleteTodo, todos];
+  return [addTodo, showTodos, deleteTodo,updateTodo, todos];
 }
