@@ -43,7 +43,7 @@ export function useCrud() {
 
   function deleteTodo(todo) {
     db.remove(todo);
-    // showTodos();
+     showTodos();
   }
 
   return [addTodo, showTodos, deleteTodo,updateTodo, todos];

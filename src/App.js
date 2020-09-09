@@ -5,24 +5,25 @@ import { useCrud } from "./hooks/useCrud";
 import { usePouchDb } from "./hooks/usePouchDb";
 
 function App() {
-  const [addTodo, showTodos, deleteTodo,updateTodo] = useCrud();
+  const [addTodo, showTodos, deleteTodo, updateTodo] = useCrud();
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [editDoc, setEditDoc] = useState(null)
+  const [editDoc, setEditDoc] = useState(null);
   const db = usePouchDb();
 
   const Item = ({ doc }) => {
     return (
       <>
-        <tr onDoubleClick={()=>{setEditDoc(doc);setInputValue(doc.title)}}>
+        <tr
+          onDoubleClick={() => {
+            setEditDoc(doc);
+            setInputValue(doc.title);
+          }}
+        >
           <td style={{ width: "100%" }}>
             <p
+              className={`todo-item`}
               style={{
-                margin: 0,
-                padding: 5,
-                letterSpacing: 0.5,
-                lineHeight: "20px",
-                marginLeft: "10px",
                 textDecoration: doc.completed ? "line-through" : "",
               }}
             >
@@ -86,28 +87,20 @@ function App() {
   }
 
   return (
-    <div
-      style={{
-        width: 500,
-        height: 500,
-        margin: 5,
-        padding: 5,
-        marginTop: 20,
-      }}
-    >
+    <div className="main-container">
       <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
         <input
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              if(editDoc){
-                editDoc.title = inputValue
-               updateTodo(editDoc)
-              }else {
+              if (editDoc) {
+                editDoc.title = inputValue;
+                updateTodo(editDoc);
+              } else {
                 addTodo(inputValue);
               }
               updateTodos();
               setInputValue("");
-              setEditDoc(null)
+              setEditDoc(null);
             }
           }}
           type="text"
@@ -115,53 +108,30 @@ function App() {
           placeholder={"Add Todo Item..."}
           value={inputValue}
         />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginLeft: 20,
-            height: 36,
-          }}
-        >
+        <div className="btn-container">
           <button
             id={"add-todo"}
             onClick={() => {
-              if(editDoc){
-                editDoc.title = inputValue
-               updateTodo(editDoc)
-              }else {
+              if (editDoc) {
+                editDoc.title = inputValue;
+                updateTodo(editDoc);
+              } else {
                 addTodo(inputValue);
               }
-              
+
               updateTodos();
               setInputValue("");
-              setEditDoc(null)
+              setEditDoc(null);
             }}
-            style={{
-              borderRadius: 4,
-              backgroundColor: "#2ec1ac",
-              padding: 8,
-              color: "white",
-              border: "none",
-              width: 100,
-              height: 36,
-            }}
+            className="add-btn"
           >
-            {editDoc ? "Update": "Add"}
+            {editDoc ? "Update" : "Add"}
           </button>
         </div>
       </div>
       <hr />
       <TodoContext.Provider value={{ todos, updateTodos: () => {} }}>
-        <table
-          style={{
-            width: 500,
-            borderCollapse: "separate",
-            borderSpacing: "0 10px",
-            borderRadius: 4,
-            borderColor: "lightgray",
-          }}
-        >
+        <table className="table-container">
           {todos && todos.length ? (
             todos.map((item) => <Item {...item} />)
           ) : (
