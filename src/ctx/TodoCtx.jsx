@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const TodoContext = createContext({ todos: [], updateTodos: () => {} });
+export const TodoContext = createContext({ todos: []});

@@ -3,12 +3,15 @@ import "./App.css";
 import { TodoContext } from "./ctx/TodoCtx";
 import { useCrud } from "./hooks/useCrud";
 import { usePouchDb } from "./hooks/usePouchDb";
+import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
 
 function App() {
-  const [addTodo, showTodos, deleteTodo, updateTodo] = useCrud();
+  const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [editDoc, setEditDoc] = useState(null);
+
+  const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
   const db = usePouchDb();
 
   const Item = ({ doc }) => {
@@ -35,7 +38,7 @@ function App() {
               style={{ marginRight: 10 }}
               onClick={() => {
                 deleteTodo(doc);
-                updateTodos();
+                getLatestDocs();
               }}
             >
               <img className={"action-icon"} src={require("./delete.png")} />
@@ -48,7 +51,7 @@ function App() {
                 onClick={() => {
                   doc.completed = true;
                   db.put(doc);
-                  updateTodos();
+                  getLatestDocs();
                 }}
               >
                 <img className={"action-icon"} src={require("./done_2.png")} />
@@ -59,7 +62,7 @@ function App() {
                 onClick={() => {
                   doc.completed = false;
                   db.put(doc);
-                  updateTodos();
+                  getLatestDocs();
                 }}
               >
                 <img className={"action-icon"} src={require("./undo.png")} />
@@ -71,17 +74,15 @@ function App() {
     );
   };
 
-  function updateTodos() {
-    db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
-      setTodos(doc.rows);
-    });
-  }
+  
 
   useEffect(() => {
-    updateTodos();
+    getLatestDocs();
   }, []);
 
-  useEffect(() => {}, [todos]);
+  useEffect(() => {
+    if (response) setTodos(response.rows);
+  }, [response]);
   function handleChange(e) {
     setInputValue(e.target.value);
   }
@@ -98,7 +99,7 @@ function App() {
               } else {
                 addTodo(inputValue);
               }
-              updateTodos();
+              getLatestDocs();
               setInputValue("");
               setEditDoc(null);
             }
@@ -119,7 +120,7 @@ function App() {
                 addTodo(inputValue);
               }
 
-              updateTodos();
+              getLatestDocs();
               setInputValue("");
               setEditDoc(null);
             }}
@@ -130,7 +131,7 @@ function App() {
         </div>
       </div>
       <hr />
-      <TodoContext.Provider value={{ todos, updateTodos: () => {} }}>
+      <TodoContext.Provider value={{ todos }}>
         <table className="table-container">
           {todos && todos.length ? (
             todos.map((item) => <Item {...item} />)
