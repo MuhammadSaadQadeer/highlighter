@@ -25,10 +25,26 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [tabValue, setTabValue] = useState("");
   const [editDoc, setEditDoc] = useState(null);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [activeTabDoc, setActiveTabDoc] = useState(null);
   const [tabs, setTabs] = useState([1, 2, 3]);
 
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
   const db = usePouchDb();
+
+  useEffect(() => {
+    getLatestDocs();
+  }, []);
+
+  useEffect(() => {
+    if (response) {
+      setTodos(response.rows);
+      setActiveTabDoc(response.rows[tabIndex]);
+    }
+  }, [response, activeTabDoc]);
+  function handleChange(e) {
+    setInputValue(e.target.value);
+  }
 
   const Item = ({ doc }) => {
     return (
@@ -90,31 +106,19 @@ function App() {
     );
   };
 
-  useEffect(() => {
-    getLatestDocs();
-  }, []);
-
-  useEffect(() => {
-    if (response) setTodos(response.rows);
-  }, [response]);
-  function handleChange(e) {
-    setInputValue(e.target.value);
-  }
-
   return (
     <div className="main-container">
-      <Tabs>
+      <Tabs
+        selectedIndex={tabIndex}
+        onSelect={(tabIndex) => {
+          setTabIndex(tabIndex);
+          setActiveTabDoc(response.rows[tabIndex]);
+        }}
+      >
         <TabList>
           {todos &&
             todos.length &&
-            todos.map((item) => {
-              return (
-                <>
-                  {console.log(item)}
-                  <Tab>{item.doc.title}</Tab>
-                </>
-              );
-            })}
+            todos.map((item) => <Tab>{item.doc.title}</Tab>)}
           <Popup trigger={<button className="button"> + </button>} modal nested>
             {(close) => (
               <div className="modal" style={{ width: 500 }}>
@@ -169,25 +173,28 @@ function App() {
             gridTemplateColumns: "80% 20%",
           }}
         >
-          <input
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                if (editDoc) {
-                  editDoc.title = inputValue;
-                  updateTodo(editDoc);
-                } else {
-                  addTodo(inputValue);
+          {response && activeTabDoc ? (
+            <input
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (editDoc) {
+                    editDoc.title = inputValue;
+                    updateTodo(editDoc);
+                  } else {
+                    addTodo(inputValue);
+                  }
+                  getLatestDocs();
+                  setInputValue("");
+                  setEditDoc(null);
                 }
-                getLatestDocs();
-                setInputValue("");
-                setEditDoc(null);
-              }
-            }}
-            type="text"
-            onChange={(e) => handleChange(e)}
-            placeholder={"Add Todo Item..."}
-            value={inputValue}
-          />
+              }}
+              type="text"
+              onChange={(e) => handleChange(e)}
+              placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
+              value={inputValue}
+            />
+          ) : null}
+
           <div className="btn-container">
             <button
               id={"add-todo"}
@@ -213,20 +220,12 @@ function App() {
           todos.length &&
           todos.map((item) => {
             return (
-              <>
-                <TabPanel>
-                  {console.log("hjere", item)}
-                  {item.doc.todos &&
-                    item.doc.todos.map((item) => {
-                      return (
-                        <div>
-                          {console.log("her", item)}
-                          {item}
-                        </div>
-                      );
-                    })}
-                </TabPanel>
-              </>
+              <TabPanel>
+                {item.doc.todos &&
+                  item.doc.todos.map((item) => {
+                    return <div>{item}</div>;
+                  })}
+              </TabPanel>
             );
           })}
       </Tabs>

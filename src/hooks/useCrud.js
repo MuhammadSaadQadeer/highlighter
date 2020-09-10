@@ -18,7 +18,6 @@ export function useCrud() {
   }
 
   function updateTodo(doc) {
-    console.log(doc);
     db.put(doc, function callback(err, result) {
       console.log(err, result);
       if (!err) {
@@ -29,7 +28,6 @@ export function useCrud() {
 
   function getDocPromise() {
     return db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
-      console.log("doc", doc.rows);
       return doc.rows;
     });
   }
