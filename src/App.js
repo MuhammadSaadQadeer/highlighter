@@ -2,14 +2,30 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import { TodoContext } from "./ctx/TodoCtx";
 import { useCrud } from "./hooks/useCrud";
+import { useCrudTabs } from "./hooks/useCrudTabs";
 import { usePouchDb } from "./hooks/usePouchDb";
 import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
 
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
+
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+
+const renderPopup = () => (
+  <Popup trigger={<button> Trigger</button>} position="right center">
+    <div>Popup content here !!</div>
+  </Popup>
+);
+
 function App() {
   const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
+  const { addTab } = useCrudTabs();
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [tabValue, setTabValue] = useState("");
   const [editDoc, setEditDoc] = useState(null);
+  const [tabs, setTabs] = useState([1, 2, 3]);
 
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
   const db = usePouchDb();
@@ -74,8 +90,6 @@ function App() {
     );
   };
 
-  
-
   useEffect(() => {
     getLatestDocs();
   }, []);
@@ -89,66 +103,130 @@ function App() {
 
   return (
     <div className="main-container">
-      <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
-        <input
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              if (editDoc) {
-                editDoc.title = inputValue;
-                updateTodo(editDoc);
-              } else {
-                addTodo(inputValue);
-              }
-              getLatestDocs();
-              setInputValue("");
-              setEditDoc(null);
-            }
-          }}
-          type="text"
-          onChange={(e) => handleChange(e)}
-          placeholder={"Add Todo Item..."}
-          value={inputValue}
-        />
-        <div className="btn-container">
-          <button
-            id={"add-todo"}
-            onClick={() => {
-              if (editDoc) {
-                editDoc.title = inputValue;
-                updateTodo(editDoc);
-              } else {
-                addTodo(inputValue);
-              }
+      <Tabs>
+        <TabList>
+          {todos &&
+            todos.length &&
+            todos.map((item) => {
+              return (
+                <>
+                  {console.log(item)}
+                  <Tab>{item.doc.title}</Tab>
+                </>
+              );
+            })}
+          <Popup trigger={<button className="button"> + </button>} modal nested>
+            {(close) => (
+              <div className="modal">
+                <button className="close" onClick={close}>
+                  &times;
+                </button>
+                <div className="header"> Add Tab Name </div>
+                <div className="content">
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      setTabValue(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </Popup>
+        </TabList>
 
-              getLatestDocs();
-              setInputValue("");
-              setEditDoc(null);
+        <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
+          <input
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (editDoc) {
+                  editDoc.title = inputValue;
+                  updateTodo(editDoc);
+                } else {
+                  addTodo(inputValue);
+                }
+                getLatestDocs();
+                setInputValue("");
+                setEditDoc(null);
+              }
             }}
-            className="add-btn"
-          >
-            {editDoc ? "Update" : "Add"}
-          </button>
-        </div>
-      </div>
-      <hr />
-      <TodoContext.Provider value={{ todos }}>
-        <table className="table-container">
-          {todos && todos.length ? (
-            todos.map((item) => <Item {...item} />)
-          ) : (
-            <span
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "gray",
+            type="text"
+            onChange={(e) => handleChange(e)}
+            placeholder={"Add Todo Item..."}
+            value={inputValue}
+          />
+          <div className="btn-container">
+            <button
+              id={"add-todo"}
+              onClick={() => {
+                if (editDoc) {
+                  editDoc.title = inputValue;
+                  updateTodo(editDoc);
+                } else {
+                  addTodo(inputValue);
+                }
+
+                getLatestDocs();
+                setInputValue("");
+                setEditDoc(null);
               }}
+              className="add-btn"
             >
-              You have no todos
-            </span>
-          )}
-        </table>
-      </TodoContext.Provider>
+              {editDoc ? "Update" : "Add"}
+            </button>
+          </div>
+        </div>
+        {todos &&
+          todos.length &&
+          todos.map((item) => {
+            return (
+              <>
+                <TabPanel>
+                  {console.log("hjere", item)}
+                  {item.doc.todos &&
+                    item.doc.todos.map((item) => {
+                      return (
+                        <div>
+                          {console.log("her", item)}
+                          {item}
+                        </div>
+                      );
+                    })}
+                </TabPanel>
+              </>
+            );
+          })}
+      </Tabs>
+
+      {/* {tabs.map((no) => {
+          return (
+            <TodoContext.Provider value={{ todos }}>
+              <TabList>
+                <Tab>{no}</Tab>
+              </TabList>
+              
+                <table className="table-container">
+                <TabPanel>
+                  {todos && todos.length ? (
+                    todos.map((item) => <Item {...item} />)
+                  ) : (
+                    <span
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        color: "gray",
+                      }}
+                    >
+                      You have no todos
+                    </span>
+                  )}
+                  </TabPanel>
+                </table>
+              
+            </TodoContext.Provider>
+          );
+        })} */}
     </div>
   );
 }
