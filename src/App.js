@@ -117,25 +117,58 @@ function App() {
             })}
           <Popup trigger={<button className="button"> + </button>} modal nested>
             {(close) => (
-              <div className="modal">
+              <div className="modal" style={{ width: 500 }}>
                 <button className="close" onClick={close}>
                   &times;
                 </button>
-                <div className="header"> Add Tab Name </div>
                 <div className="content">
                   <input
                     type="text"
+                    placeholder={"Add Title"}
+                    style={{
+                      width: 500,
+                    }}
                     onChange={(e) => {
                       setTabValue(e.target.value);
                     }}
                   />
                 </div>
+
+                <button
+                  id={"add-todo"}
+                  onClick={() => {
+                    if (editDoc) {
+                      editDoc.title = inputValue;
+                      updateTodo(editDoc);
+                    } else {
+                      let obj = {
+                        title: tabValue,
+                        todos: [],
+                        color: "orange",
+                      };
+                      addTab(obj);
+                    }
+
+                    getLatestDocs();
+                    setTabValue("");
+                    setEditDoc(null);
+                    close();
+                  }}
+                  className="add-btn"
+                >
+                  {editDoc ? "Update" : "Add"}
+                </button>
               </div>
             )}
           </Popup>
         </TabList>
 
-        <div style={{ display: "grid", gridTemplateColumns: "80% 20%" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "80% 20%",
+          }}
+        >
           <input
             onKeyDown={(e) => {
               if (e.key === "Enter") {

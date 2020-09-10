@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export function useCrud() {
   const db = usePouchDb();
-  
+
   function addTodo(text) {
     var todo = {
       _id: new Date().toISOString(),
@@ -28,20 +28,15 @@ export function useCrud() {
   }
 
   function getDocPromise() {
-    
-    return db.allDocs(
-      { include_docs: true, descending: true },
-      (err, doc) => {
-        console.log("doc", doc.rows)
-        return doc.rows;
-      }
-    );
-
+    return db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
+      console.log("doc", doc.rows);
+      return doc.rows;
+    });
   }
 
   function deleteTodo(todo) {
     db.remove(todo);
   }
 
-  return {addTodo, getDocPromise, deleteTodo, updateTodo};
+  return { addTodo, getDocPromise, deleteTodo, updateTodo };
 }

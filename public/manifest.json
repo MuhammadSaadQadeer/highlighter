@@ -4,17 +4,14 @@
   "manifest_version": 2,
   "description": "I will highlight and create a separate file for you whatever you will highlight on the web",
   "icons": {
-      "512": "logo.png"
+    "512": "logo.png"
   },
   "browser_action": {
-      "default_icon": "logo.png",
-      "default_popup": "popup.html"
+    "default_icon": "logo.png",
+    "default_popup": "popup.html"
   },
   "background": {
     "scripts": ["app/background.js"]
-},
-"permissions": [
-  "webRequest",
-  "*://developer.mozilla.org/"
-]
+  },
+  "permissions": ["webRequest", "*://developer.mozilla.org/"]
 }
