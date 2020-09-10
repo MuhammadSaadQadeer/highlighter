@@ -46,7 +46,7 @@ function App() {
     setInputValue(e.target.value);
   }
 
-  const Item = ({ doc }) => {
+  const Item = ({ completed, title, doc }) => {
     return (
       <>
         <tr
@@ -59,10 +59,10 @@ function App() {
             <p
               className={`todo-item`}
               style={{
-                textDecoration: doc.completed ? "line-through" : "",
+                textDecoration: completed ? "line-through" : "",
               }}
             >
-              {doc.title}
+              {title}
             </p>
           </td>
           <td>
@@ -77,7 +77,7 @@ function App() {
             </span>
           </td>
           <td>
-            {!doc.completed ? (
+            {!completed ? (
               <span
                 style={{ marginRight: 10 }}
                 onClick={() => {
@@ -92,7 +92,7 @@ function App() {
               <span
                 style={{ marginRight: 10 }}
                 onClick={() => {
-                  doc.completed = false;
+                  completed = false;
                   db.put(doc);
                   getLatestDocs();
                 }}
@@ -139,7 +139,7 @@ function App() {
                 </div>
 
                 <button
-                  id={"add-todo"}
+                  id={"add-tab"}
                   onClick={() => {
                     if (editDoc) {
                       editDoc.title = inputValue;
@@ -181,7 +181,15 @@ function App() {
                     editDoc.title = inputValue;
                     updateTodo(editDoc);
                   } else {
-                    addTodo(inputValue);
+                    var todo = {
+                      // _id: new Date().toISOString(),
+                      title: inputValue,
+                      completed: false,
+                    };
+                    // let currDoc = activeTabDoc;
+                    // currDoc._id = new Date().toISOString();
+                    activeTabDoc.doc.todos.push(todo);
+                    addTodo(activeTabDoc.doc);
                   }
                   getLatestDocs();
                   setInputValue("");
@@ -203,7 +211,14 @@ function App() {
                   editDoc.title = inputValue;
                   updateTodo(editDoc);
                 } else {
-                  addTodo(inputValue);
+                  var todo = {
+                    _id: new Date().toISOString(),
+                    title: inputValue,
+                    completed: false,
+                  };
+                  let currDoc = activeTabDoc;
+                  currDoc.doc.todos.push(todo);
+                  updateTodo(currDoc);
                 }
 
                 getLatestDocs();
@@ -223,7 +238,7 @@ function App() {
               <TabPanel>
                 {item.doc.todos &&
                   item.doc.todos.map((item) => {
-                    return <div>{item}</div>;
+                    return <Item {...item} />;
                   })}
               </TabPanel>
             );

@@ -4,13 +4,15 @@ import { useState } from "react";
 export function useCrud() {
   const db = usePouchDb();
 
-  function addTodo(text) {
-    var todo = {
-      _id: new Date().toISOString(),
-      title: text,
-      completed: false,
-    };
-    db.put(todo, function callback(err, result) {
+  function addTodo(doc) {
+    // var todo = {
+    //   _id: new Date().toISOString(),
+    //   title: text,
+    //   completed: false,
+    // };
+    console.log("doc", doc);
+    db.put(doc, function callback(err, result) {
+      console.log(err);
       if (!err) {
         console.log("Successfully posted a todo!");
       }
@@ -28,6 +30,7 @@ export function useCrud() {
 
   function getDocPromise() {
     return db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
+      console.log(doc.rows);
       return doc.rows;
     });
   }
