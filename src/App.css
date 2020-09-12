@@ -148,3 +148,18 @@ button:hover {
 .popup-content {
   width: 0px;
 }
+
+/* Add Button Css */
+
+.add-btn-icon {
+  background: transparent;
+  margin: 5px;
+  /* outline: none; */
+  color: #54b0a3;
+  border: 1px solid #54b0a3;
+}
+
+.add-btn-icon:hover {
+  color: white;
+  border: 1px solid;
+}

@@ -131,7 +131,11 @@ function App() {
           {todos &&
             todos.length &&
             todos.map((item) => <Tab>{item.doc.title}</Tab>)}
-          <Popup trigger={<button className="button"> + </button>} modal nested>
+          <Popup
+            trigger={<button className="add-btn-icon"> + </button>}
+            modal
+            nested
+          >
             {(close) => (
               <div className="modal" style={{ width: 500 }}>
                 <button className="close" onClick={close}>
