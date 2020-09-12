@@ -19,16 +19,15 @@ const renderPopup = () => (
 );
 
 function App() {
-  const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
-  const { addTab } = useCrudTabs();
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
   const [tabValue, setTabValue] = useState("");
   const [editDoc, setEditDoc] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [activeTabDoc, setActiveTabDoc] = useState(null);
-  const [tabs, setTabs] = useState([1, 2, 3]);
 
+  const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
+  const { addTab } = useCrudTabs();
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
   const db = usePouchDb();
 
@@ -46,13 +45,13 @@ function App() {
     setInputValue(e.target.value);
   }
 
-  const Item = ({ completed, title, doc }) => {
+  const Item = ({ completed, title, _id, doc }) => {
     return (
       <>
         <tr
           onDoubleClick={() => {
-            setEditDoc(doc);
-            setInputValue(doc.title);
+            setEditDoc({ _id, title });
+            setInputValue(title);
           }}
         >
           <td style={{ width: "100%" }}>
@@ -69,7 +68,8 @@ function App() {
             <span
               style={{ marginRight: 10 }}
               onClick={() => {
-                deleteTodo(doc);
+                doc.todos = doc.todos.filter((item) => item._id !== _id);
+                updateTodo(doc);
                 getLatestDocs();
               }}
             >
@@ -81,23 +81,35 @@ function App() {
               <span
                 style={{ marginRight: 10 }}
                 onClick={() => {
-                  doc.completed = true;
-                  db.put(doc);
+                  doc.todos.filter(
+                    (item) => item._id === _id
+                  )[0].completed = true;
+                  updateTodo(doc);
                   getLatestDocs();
                 }}
               >
-                <img className={"action-icon"} src={require("./done_2.png")} />
+                <img
+                  alt="done"
+                  className={"action-icon"}
+                  src={require("./done_2.png")}
+                />
               </span>
             ) : (
               <span
                 style={{ marginRight: 10 }}
                 onClick={() => {
-                  completed = false;
-                  db.put(doc);
+                  doc.todos.filter(
+                    (item) => item._id === _id
+                  )[0].completed = false;
+                  updateTodo(doc);
                   getLatestDocs();
                 }}
               >
-                <img className={"action-icon"} src={require("./undo.png")} />
+                <img
+                  alt="undo"
+                  className={"action-icon"}
+                  src={require("./undo.png")}
+                />
               </span>
             )}
           </td>
@@ -179,15 +191,17 @@ function App() {
                 if (e.key === "Enter") {
                   if (editDoc) {
                     editDoc.title = inputValue;
-                    updateTodo(editDoc);
+                    let temp = (activeTabDoc.doc.todos.filter(
+                      (item) => item._id === editDoc._id
+                    )[0].title = inputValue);
+                    console.log("BAZ", temp);
+                    updateTodo(activeTabDoc);
                   } else {
                     var todo = {
-                      // _id: new Date().toISOString(),
+                      _id: new Date().toISOString(),
                       title: inputValue,
                       completed: false,
                     };
-                    // let currDoc = activeTabDoc;
-                    // currDoc._id = new Date().toISOString();
                     activeTabDoc.doc.todos.push(todo);
                     addTodo(activeTabDoc.doc);
                   }
@@ -235,45 +249,17 @@ function App() {
           todos.length &&
           todos.map((item) => {
             return (
-              <TabPanel>
-                {item.doc.todos &&
-                  item.doc.todos.map((item) => {
-                    return <Item {...item} />;
-                  })}
-              </TabPanel>
+              <table className="table-container">
+                <TabPanel>
+                  {item.doc.todos &&
+                    item.doc.todos.map((item) => {
+                      return <Item {...item} doc={activeTabDoc.doc} />;
+                    })}
+                </TabPanel>
+              </table>
             );
           })}
       </Tabs>
-
-      {/* {tabs.map((no) => {
-          return (
-            <TodoContext.Provider value={{ todos }}>
-              <TabList>
-                <Tab>{no}</Tab>
-              </TabList>
-              
-                <table className="table-container">
-                <TabPanel>
-                  {todos && todos.length ? (
-                    todos.map((item) => <Item {...item} />)
-                  ) : (
-                    <span
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        color: "gray",
-                      }}
-                    >
-                      You have no todos
-                    </span>
-                  )}
-                  </TabPanel>
-                </table>
-              
-            </TodoContext.Provider>
-          );
-        })} */}
     </div>
   );
 }
