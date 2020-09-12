@@ -129,7 +129,7 @@ function App() {
       >
         <TabList>
           {todos &&
-            todos.length &&
+            todos.length > 0 &&
             todos.map((item) => <Tab>{item.doc.title}</Tab>)}
           <Popup
             trigger={<button className="add-btn-icon"> + </button>}
@@ -176,7 +176,7 @@ function App() {
                   }}
                   className="add-btn"
                 >
-                  {editDoc ? "Update" : "Add"}
+                  {editDoc ? "Update Tab" : "Add Tab"}
                 </button>
               </div>
             )}
@@ -190,67 +190,67 @@ function App() {
           }}
         >
           {response && activeTabDoc ? (
-            <input
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  if (editDoc) {
-                    editDoc.title = inputValue;
-                    let temp = (activeTabDoc.doc.todos.filter(
-                      (item) => item._id === editDoc._id
-                    )[0].title = inputValue);
-                    console.log("BAZ", temp);
-                    updateTodo(activeTabDoc);
-                  } else {
-                    var todo = {
-                      _id: new Date().toISOString(),
-                      title: inputValue,
-                      completed: false,
-                    };
-                    activeTabDoc.doc.todos.push(todo);
-                    addTodo(activeTabDoc.doc);
+            <>
+              <input
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (editDoc) {
+                      editDoc.title = inputValue;
+                      let temp = (activeTabDoc.doc.todos.filter(
+                        (item) => item._id === editDoc._id
+                      )[0].title = inputValue);
+                      console.log("BAZ", temp);
+                      updateTodo(activeTabDoc);
+                    } else {
+                      var todo = {
+                        _id: new Date().toISOString(),
+                        title: inputValue,
+                        completed: false,
+                      };
+                      activeTabDoc.doc.todos.push(todo);
+                      addTodo(activeTabDoc.doc);
+                    }
+                    getLatestDocs();
+                    setInputValue("");
+                    setEditDoc(null);
                   }
-                  getLatestDocs();
-                  setInputValue("");
-                  setEditDoc(null);
-                }
-              }}
-              type="text"
-              onChange={(e) => handleChange(e)}
-              placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
-              value={inputValue}
-            />
+                }}
+                type="text"
+                onChange={(e) => handleChange(e)}
+                placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
+                value={inputValue}
+              />
+              <div className="btn-container">
+                <button
+                  id={"add-todo"}
+                  onClick={() => {
+                    if (editDoc) {
+                      editDoc.title = inputValue;
+                      updateTodo(editDoc);
+                    } else {
+                      var todo = {
+                        _id: new Date().toISOString(),
+                        title: inputValue,
+                        completed: false,
+                      };
+                      let currDoc = activeTabDoc;
+                      currDoc.doc.todos.push(todo);
+                      updateTodo(currDoc);
+                    }
+
+                    getLatestDocs();
+                    setInputValue("");
+                    setEditDoc(null);
+                  }}
+                  className="add-btn"
+                >
+                  {editDoc ? "Update" : "Add"}
+                </button>
+              </div>
+            </>
           ) : null}
-
-          <div className="btn-container">
-            <button
-              id={"add-todo"}
-              onClick={() => {
-                if (editDoc) {
-                  editDoc.title = inputValue;
-                  updateTodo(editDoc);
-                } else {
-                  var todo = {
-                    _id: new Date().toISOString(),
-                    title: inputValue,
-                    completed: false,
-                  };
-                  let currDoc = activeTabDoc;
-                  currDoc.doc.todos.push(todo);
-                  updateTodo(currDoc);
-                }
-
-                getLatestDocs();
-                setInputValue("");
-                setEditDoc(null);
-              }}
-              className="add-btn"
-            >
-              {editDoc ? "Update" : "Add"}
-            </button>
-          </div>
         </div>
-        {todos &&
-          todos.length &&
+        {todos && todos.length > 0 ? (
           todos.map((item) => {
             return (
               <table className="table-container">
@@ -262,7 +262,19 @@ function App() {
                 </TabPanel>
               </table>
             );
-          })}
+          })
+        ) : (
+          <span
+            style={{
+              color: "gray",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Add Tabs and Todos
+          </span>
+        )}
       </Tabs>
     </div>
   );

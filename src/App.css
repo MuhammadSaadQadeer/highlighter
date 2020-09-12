@@ -146,7 +146,9 @@ button:hover {
 }
 
 .popup-content {
-  width: 0px;
+  width: 32% !important;
+  border-radius: 7px !important;
+  padding: 10px !important;
 }
 
 /* Add Button Css */
