@@ -12,9 +12,26 @@ import "react-tabs/style/react-tabs.css";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
+import { SketchPicker, CompactPicker } from "react-color";
+
 const renderPopup = () => (
   <Popup trigger={<button> Trigger</button>} position="right center">
     <div>Popup content here !!</div>
+  </Popup>
+);
+
+const Tooltip = () => (
+  <Popup
+    trigger={(open) => (
+      <img
+        style={{ width: 20, height: 20 }}
+        src={require("./colorpicker.png")}
+      />
+    )}
+    position="right center"
+    closeOnDocumentClick
+  >
+    <CompactPicker />
   </Popup>
 );
 
@@ -25,6 +42,8 @@ function App() {
   const [editDoc, setEditDoc] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [activeTabDoc, setActiveTabDoc] = useState(null);
+  const [tabColor, setTabColor] = useState("white");
+  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
   const { addTab } = useCrudTabs();
@@ -130,7 +149,9 @@ function App() {
         <TabList>
           {todos &&
             todos.length > 0 &&
-            todos.map((item) => <Tab>{item.doc.title}</Tab>)}
+            todos.map((item) => (
+              <Tab style={{ backgroundColor: tabColor }}>{item.doc.title}</Tab>
+            ))}
           <Popup
             trigger={<button className="add-btn-icon"> + </button>}
             modal
@@ -182,6 +203,10 @@ function App() {
             )}
           </Popup>
         </TabList>
+
+        <div style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}>
+          <Tooltip />
+        </div>
 
         <div
           style={{
