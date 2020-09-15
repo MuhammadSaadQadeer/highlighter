@@ -5,6 +5,7 @@ import "react-tabs/style/react-tabs.css";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
+import Modal from "./components/Modal";
 import { useCrud } from "./hooks/useCrud";
 import { useCrudTabs } from "./hooks/useCrudTabs";
 import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
@@ -145,56 +146,47 @@ function App() {
             todos.map((item) => (
               <Tab style={{ backgroundColor: tabColor }}>{item.doc.title}</Tab>
             ))}
-          <Popup
-            trigger={<button className="add-btn-icon"> + </button>}
-            modal
-            nested
-          >
-            {(close) => (
-              <div className="modal" style={{ width: 500 }}>
-                <button className="close" onClick={close}>
-                  &times;
-                </button>
-                <div className="content">
-                  <input
-                    type="text"
-                    placeholder={"Add Title"}
-                    style={{
-                      width: 500,
-                    }}
-                    onChange={(e) => {
-                      setTabValue(e.target.value);
-                    }}
-                  />
-                </div>
-
-                <button
-                  id={"add-tab"}
-                  onClick={() => {
-                    if (editDoc) {
-                      editDoc.title = inputValue;
-                      updateTodo(editDoc);
-                    } else {
-                      let obj = {
-                        title: tabValue,
-                        todos: [],
-                        color: "orange",
-                      };
-                      addTab(obj);
-                    }
-
-                    getLatestDocs();
-                    setTabValue("");
-                    setEditDoc(null);
-                    close();
+          <Modal trigger={<button className="add-btn-icon"> + </button>}>
+            <div className="modal" style={{ width: 500 }}>
+              <div className="content">
+                <input
+                  type="text"
+                  placeholder={"Add Title"}
+                  style={{
+                    width: 500,
                   }}
-                  className="add-btn"
-                >
-                  {editDoc ? "Update Tab" : "Add Tab"}
-                </button>
+                  onChange={(e) => {
+                    setTabValue(e.target.value);
+                  }}
+                />
               </div>
-            )}
-          </Popup>
+
+              <button
+                id={"add-tab"}
+                onClick={() => {
+                  if (editDoc) {
+                    editDoc.title = inputValue;
+                    updateTodo(editDoc);
+                  } else {
+                    let obj = {
+                      title: tabValue,
+                      todos: [],
+                      color: "orange",
+                    };
+                    addTab(obj);
+                  }
+
+                  getLatestDocs();
+                  setTabValue("");
+                  setEditDoc(null);
+                  // close();
+                }}
+                className="add-btn"
+              >
+                {editDoc ? "Update Tab" : "Add Tab"}
+              </button>
+            </div>
+          </Modal>
         </TabList>
 
         <div style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}>
