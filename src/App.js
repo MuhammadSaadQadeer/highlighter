@@ -74,16 +74,18 @@ function App() {
   function handleTodoAdd() {
     if (editDoc) {
       editDoc.title = inputValue;
-      updateTodo(editDoc);
+      let temp = (activeTabDoc.doc.todos.filter(
+        (item) => item._id === editDoc._id
+      )[0].title = inputValue);
+      updateTodo(activeTabDoc);
     } else {
       var todo = {
         _id: new Date().toISOString(),
         title: inputValue,
         completed: false,
       };
-      let currDoc = activeTabDoc;
-      currDoc.doc.todos.push(todo);
-      updateTodo(currDoc);
+      activeTabDoc.doc.todos.push(todo);
+      addTodo(activeTabDoc.doc);
     }
     refresh();
   }
@@ -191,6 +193,7 @@ function App() {
               <div className="content">
                 <input
                   type="text"
+                  id="tab-title"
                   placeholder={"Add Title"}
                   style={{
                     width: 500,
@@ -224,25 +227,9 @@ function App() {
           {response && activeTabDoc ? (
             <>
               <input
+                id="todo-description"
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (editDoc) {
-                      editDoc.title = inputValue;
-                      let temp = (activeTabDoc.doc.todos.filter(
-                        (item) => item._id === editDoc._id
-                      )[0].title = inputValue);
-                      updateTodo(activeTabDoc);
-                    } else {
-                      var todo = {
-                        _id: new Date().toISOString(),
-                        title: inputValue,
-                        completed: false,
-                      };
-                      activeTabDoc.doc.todos.push(todo);
-                      addTodo(activeTabDoc.doc);
-                    }
-                    refresh();
-                  }
+                  if (e.key === "Enter") handleTodoAdd();
                 }}
                 type="text"
                 onChange={(e) => handleChange(e)}
