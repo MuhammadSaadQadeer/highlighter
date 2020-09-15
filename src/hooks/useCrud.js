@@ -9,9 +9,7 @@ export function useCrud() {
     //   title: text,
     //   completed: false,
     // };
-    console.log("doc", doc);
     db.put(doc, function callback(err, result) {
-      console.log(err);
       if (!err) {
         console.log("Successfully posted a todo!");
       }
@@ -20,7 +18,6 @@ export function useCrud() {
 
   function updateTodo(doc) {
     db.put(doc, function callback(err, result) {
-      console.log(err, result);
       if (!err) {
         console.log("Successfully updated a todo!");
       }
@@ -29,7 +26,6 @@ export function useCrud() {
 
   function getDocPromise() {
     return db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
-      console.log(doc.rows);
       return doc.rows;
     });
   }

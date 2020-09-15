@@ -231,7 +231,6 @@ function App() {
                       let temp = (activeTabDoc.doc.todos.filter(
                         (item) => item._id === editDoc._id
                       )[0].title = inputValue);
-                      console.log("BAZ", temp);
                       updateTodo(activeTabDoc);
                     } else {
                       var todo = {
