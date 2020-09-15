@@ -5,6 +5,7 @@ import "react-tabs/style/react-tabs.css";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
+import Button from "./components/Button";
 import Modal from "./components/Modal";
 import { useCrud } from "./hooks/useCrud";
 import { useCrudTabs } from "./hooks/useCrudTabs";
@@ -50,8 +51,47 @@ function App() {
       setActiveTabDoc(response.rows[tabIndex]);
     }
   }, [response, activeTabDoc]);
+
   function handleChange(e) {
     setInputValue(e.target.value);
+  }
+
+  function handleTabAdd() {
+    if (editDoc) {
+      editDoc.title = inputValue;
+      updateTodo(editDoc);
+    } else {
+      let obj = {
+        title: tabValue,
+        todos: [],
+        color: "orange",
+      };
+      addTab(obj);
+    }
+    refresh();
+  }
+
+  function handleTodoAdd() {
+    if (editDoc) {
+      editDoc.title = inputValue;
+      updateTodo(editDoc);
+    } else {
+      var todo = {
+        _id: new Date().toISOString(),
+        title: inputValue,
+        completed: false,
+      };
+      let currDoc = activeTabDoc;
+      currDoc.doc.todos.push(todo);
+      updateTodo(currDoc);
+    }
+    refresh();
+  }
+
+  function refresh() {
+    getLatestDocs();
+    setInputValue("");
+    setEditDoc(null);
   }
 
   const Item = ({ completed, title, _id, doc }) => {
@@ -161,30 +201,12 @@ function App() {
                 />
               </div>
 
-              <button
+              <Button
                 id={"add-tab"}
-                onClick={() => {
-                  if (editDoc) {
-                    editDoc.title = inputValue;
-                    updateTodo(editDoc);
-                  } else {
-                    let obj = {
-                      title: tabValue,
-                      todos: [],
-                      color: "orange",
-                    };
-                    addTab(obj);
-                  }
-
-                  getLatestDocs();
-                  setTabValue("");
-                  setEditDoc(null);
-                  // close();
-                }}
+                onClick={handleTabAdd}
                 className="add-btn"
-              >
-                {editDoc ? "Update Tab" : "Add Tab"}
-              </button>
+                btnText={editDoc ? "Update Tab" : "Add Tab"}
+              />
             </div>
           </Modal>
         </TabList>
@@ -220,9 +242,7 @@ function App() {
                       activeTabDoc.doc.todos.push(todo);
                       addTodo(activeTabDoc.doc);
                     }
-                    getLatestDocs();
-                    setInputValue("");
-                    setEditDoc(null);
+                    refresh();
                   }
                 }}
                 type="text"
@@ -231,31 +251,12 @@ function App() {
                 value={inputValue}
               />
               <div className="btn-container">
-                <button
-                  id={"add-todo"}
-                  onClick={() => {
-                    if (editDoc) {
-                      editDoc.title = inputValue;
-                      updateTodo(editDoc);
-                    } else {
-                      var todo = {
-                        _id: new Date().toISOString(),
-                        title: inputValue,
-                        completed: false,
-                      };
-                      let currDoc = activeTabDoc;
-                      currDoc.doc.todos.push(todo);
-                      updateTodo(currDoc);
-                    }
-
-                    getLatestDocs();
-                    setInputValue("");
-                    setEditDoc(null);
-                  }}
+                <Button
+                  id="add-todo"
+                  onClick={handleTodoAdd}
                   className="add-btn"
-                >
-                  {editDoc ? "Update" : "Add"}
-                </button>
+                  btnText={editDoc ? "Update" : "Add"}
+                />
               </div>
             </>
           ) : null}
