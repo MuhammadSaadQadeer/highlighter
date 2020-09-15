@@ -1,29 +1,19 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import { TodoContext } from "./ctx/TodoCtx";
-import { useCrud } from "./hooks/useCrud";
-import { useCrudTabs } from "./hooks/useCrudTabs";
-import { usePouchDb } from "./hooks/usePouchDb";
-import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
-
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import React, { useEffect, useState } from "react";
+import { CompactPicker } from "react-color";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
-
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-
-import { SketchPicker, CompactPicker } from "react-color";
-
-const renderPopup = () => (
-  <Popup trigger={<button> Trigger</button>} position="right center">
-    <div>Popup content here !!</div>
-  </Popup>
-);
+import "./App.css";
+import { useCrud } from "./hooks/useCrud";
+import { useCrudTabs } from "./hooks/useCrudTabs";
+import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
 
 const Tooltip = () => (
   <Popup
     trigger={(open) => (
       <img
+        alt="color-picker-icon"
         style={{ width: 20, height: 20 }}
         src={require("./colorpicker.png")}
       />
@@ -48,7 +38,6 @@ function App() {
   const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
   const { addTab } = useCrudTabs();
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
-  const db = usePouchDb();
 
   useEffect(() => {
     getLatestDocs();
@@ -92,7 +81,11 @@ function App() {
                 getLatestDocs();
               }}
             >
-              <img className={"action-icon"} src={require("./delete.png")} />
+              <img
+                alt="delete-icon"
+                className={"action-icon"}
+                src={require("./delete.png")}
+              />
             </span>
           </td>
           <td>
@@ -108,7 +101,7 @@ function App() {
                 }}
               >
                 <img
-                  alt="done"
+                  alt="done-icon"
                   className={"action-icon"}
                   src={require("./done_2.png")}
                 />
@@ -125,7 +118,7 @@ function App() {
                 }}
               >
                 <img
-                  alt="undo"
+                  alt="undo-icon"
                   className={"action-icon"}
                   src={require("./undo.png")}
                 />

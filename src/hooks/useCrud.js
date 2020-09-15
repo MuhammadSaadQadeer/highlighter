@@ -1,5 +1,4 @@
 import { usePouchDb } from "./usePouchDb";
-import { useState } from "react";
 
 export function useCrud() {
   const db = usePouchDb();

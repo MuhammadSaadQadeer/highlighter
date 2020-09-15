@@ -23,12 +23,5 @@ export function useCrudTabs() {
 
   function showTabs() {}
 
-  function getTabPromise() {
-    return db.allDocs({ include_docs: true, descending: true }, (err, doc) => {
-      console.log("doc", doc.rows);
-      return doc.rows;
-    });
-  }
-
   return { addTab, removeTab, editTab, showTabs };
 }
