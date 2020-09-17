@@ -17,9 +17,19 @@ export function useCrudTabs() {
     });
   }
 
-  function removeTab() {}
+  function removeTab(tab) {
+    db.remove(tab);
+  }
 
-  function editTab() {}
+  function editTab(tab) {
+    db.put(tab, function callback(err, result) {
+      if (!err) {
+        console.log("Tab updated successfully!");
+      } else {
+        console.log(err);
+      }
+    });
+  }
 
   function showTabs() {}
 

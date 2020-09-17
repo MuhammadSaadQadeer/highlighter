@@ -11,7 +11,7 @@ import { useCrud } from "./hooks/useCrud";
 import { useCrudTabs } from "./hooks/useCrudTabs";
 import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
 
-const Tooltip = () => (
+const Tooltip = (props) => (
   <Popup
     trigger={(open) => (
       <img
@@ -23,7 +23,46 @@ const Tooltip = () => (
     position="right center"
     closeOnDocumentClick
   >
-    <CompactPicker />
+    <CompactPicker
+      color={props.color}
+      onChangeComplete={props.updateColor}
+      colors={[
+        "#4D4D4D",
+        "#999999",
+
+        "#FCDC00",
+        "#DBDF00",
+        "#A4DD00",
+        "#68CCCA",
+        "#73D8FF",
+        "#AEA1FF",
+        "#FDA1FF",
+        "#333333",
+        "#808080",
+        "#cccccc",
+        "#D33115",
+        "#E27300",
+        "#FCC400",
+        "#B0BC00",
+        "#68BC00",
+        "#16A5A5",
+        "#009CE0",
+        "#7B64FF",
+        "#FA28FF",
+        "#000000",
+        "#666666",
+        "#B3B3B3",
+        "#9F0500",
+        "#C45100",
+        "#FB9E00",
+        "#808900",
+        "#194D33",
+        "#0C797D",
+        "#0062B1",
+        "#653294",
+        "#AB149E",
+      ]}
+    />
   </Popup>
 );
 
@@ -34,11 +73,9 @@ function App() {
   const [editDoc, setEditDoc] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [activeTabDoc, setActiveTabDoc] = useState(null);
-  const [tabColor, setTabColor] = useState("white");
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
-  const { addTab } = useCrudTabs();
+  const { addTab, editTab, removeTab } = useCrudTabs();
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
 
   useEffect(() => {
@@ -86,7 +123,15 @@ function App() {
       };
       activeTabDoc.doc.todos.push(todo);
       addTodo(activeTabDoc.doc);
+      refresh();
     }
+    refresh();
+  }
+
+  function updateColor(color) {
+    console.log(color);
+    activeTabDoc.doc.color = color.hex;
+    editTab(activeTabDoc.doc);
     refresh();
   }
 
@@ -186,7 +231,28 @@ function App() {
           {todos &&
             todos.length > 0 &&
             todos.map((item) => (
-              <Tab style={{ backgroundColor: tabColor }}>{item.doc.title}</Tab>
+              <Tab style={{ backgroundColor: item.doc.color }}>
+                <div
+                  className="d-flex"
+                  style={{
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div>{item.doc.title}</div>
+
+                  <div
+                    onClick={() => {
+                      removeTab(item.doc);
+                      refresh();
+                      window.location.reload();
+                    }}
+                    style={{ paddingLeft: 20 }}
+                  >
+                    &times;
+                  </div>
+                </div>
+              </Tab>
             ))}
           <Modal trigger={<button className="add-btn-icon"> + </button>}>
             <div className="modal" style={{ width: 500 }}>
@@ -215,7 +281,9 @@ function App() {
         </TabList>
 
         <div style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}>
-          <Tooltip />
+          {activeTabDoc && (
+            <Tooltip color={activeTabDoc.doc.color} updateColor={updateColor} />
+          )}
         </div>
 
         <div
@@ -250,7 +318,10 @@ function App() {
         {todos && todos.length > 0 ? (
           todos.map((item) => {
             return (
-              <table className="table-container">
+              <table
+                className="table-container"
+                style={{ backgroundColor: item.doc.color }}
+              >
                 <TabPanel>
                   {item.doc.todos &&
                     item.doc.todos.map((item) => {
