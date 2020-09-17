@@ -6,7 +6,6 @@ import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
 import Button from "./components/Button";
-import Modal from "./components/Modal";
 import { useCrud } from "./hooks/useCrud";
 import { useCrudTabs } from "./hooks/useCrudTabs";
 import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
@@ -99,9 +98,9 @@ function App() {
       updateTodo(editDoc);
     } else {
       let obj = {
-        title: tabValue,
+        title: "New Tab",
         todos: [],
-        color: "orange",
+        color: "#bfbdbd47",
       };
       addTab(obj);
     }
@@ -254,30 +253,12 @@ function App() {
                 </div>
               </Tab>
             ))}
-          <Modal trigger={<button className="add-btn-icon"> + </button>}>
-            <div className="modal" style={{ width: 500 }}>
-              <div className="content">
-                <input
-                  type="text"
-                  id="tab-title"
-                  placeholder={"Add Title"}
-                  style={{
-                    width: 500,
-                  }}
-                  onChange={(e) => {
-                    setTabValue(e.target.value);
-                  }}
-                />
-              </div>
 
-              <Button
-                id={"add-tab"}
-                onClick={handleTabAdd}
-                className="add-btn"
-                btnText={editDoc ? "Update Tab" : "Add Tab"}
-              />
-            </div>
-          </Modal>
+          <img
+            onClick={handleTabAdd}
+            style={{ height: 20 }}
+            src={require("./addTodo.png")}
+          />
         </TabList>
 
         <div style={{ display: "flex", flexDirection: "row", marginBottom: 5 }}>
