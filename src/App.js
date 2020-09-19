@@ -57,7 +57,7 @@ const Tooltip = (props) => (
 function App() {
   const [todos, setTodos] = useState(null);
   const [inputValue, setInputValue] = useState("");
-  const [tabValue, setTabValue] = useState("");
+  const [tabTitle, setTabTitle] = useState("");
   const [editDoc, setEditDoc] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [activeTabDoc, setActiveTabDoc] = useState(null);
@@ -228,7 +228,19 @@ function App() {
                     alignItems: "center",
                   }}
                 >
-                  <div>{item.doc.title}</div>
+                  <div
+                    contentEditable={true}
+                    onInput={(e) => {
+                      setTabTitle(e.currentTarget.textContent);
+                    }}
+                    onBlur={() => {
+                      console.log(tabTitle);
+                      activeTabDoc.doc.title = tabTitle;
+                      editTab(activeTabDoc.doc);
+                    }}
+                  >
+                    {item.doc.title}
+                  </div>
 
                   <div
                     onClick={() => {
