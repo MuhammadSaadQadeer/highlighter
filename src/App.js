@@ -248,9 +248,17 @@ function App() {
                       refresh();
                       window.location.reload();
                     }}
-                    style={{ paddingLeft: 20 }}
+                    style={{
+                      paddingLeft: 20,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
                   >
-                    &times;
+                    <img
+                      src={require("./cross.png")}
+                      style={{ width: 15, height: 15 }}
+                    />
                   </div>
                 </div>
               </Tab>
