@@ -15,7 +15,13 @@ const Tooltip = (props) => (
     trigger={(open) => (
       <img
         alt="color-picker-icon"
-        style={{ width: 20, height: 20 }}
+        style={{
+          width: 30,
+          height: 30,
+          border: "1px solid white",
+          borderRadius: "50%",
+          borderWidth: "2px",
+        }}
         src={require("./colorpicker.png")}
       />
     )}
@@ -249,8 +255,9 @@ function App() {
           style={{
             display: "flex",
             flexDirection: "row",
-            paddingBottom: 5,
+            padding: 10,
             backgroundColor: activeTabDoc && activeTabDoc.doc.color,
+            justifyContent: "flex-end",
           }}
         >
           {activeTabDoc && (

@@ -59,7 +59,6 @@ button:active {
   width: 500px;
   border-collapse: separate;
   border-spacing: 0 5px;
-  border-radius: 4px;
 }
 
 .add-btn {
