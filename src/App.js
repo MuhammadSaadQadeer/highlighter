@@ -18,7 +18,7 @@ const Tooltip = (props) => (
         style={{
           width: 30,
           height: 30,
-          border: "1px solid white",
+          // border: "1px solid white",
           borderRadius: "50%",
           borderWidth: "2px",
         }}
@@ -65,6 +65,8 @@ function App() {
   const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
   const { addTab, editTab, removeTab } = useCrudTabs();
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
+
+  const [editable, setEditable] = useState(false);
 
   useEffect(() => {
     getLatestDocs();
@@ -235,8 +237,11 @@ function App() {
                     }}
                     onBlur={() => {
                       console.log(tabTitle);
-                      activeTabDoc.doc.title = tabTitle;
-                      editTab(activeTabDoc.doc);
+                      if (tabTitle) {
+                        activeTabDoc.doc.title = tabTitle;
+                        editTab(activeTabDoc.doc);
+                        setEditable(false);
+                      }
                     }}
                   >
                     {item.doc.title}
@@ -278,6 +283,7 @@ function App() {
             padding: 10,
             backgroundColor: activeTabDoc && activeTabDoc.doc.color,
             justifyContent: "flex-end",
+            alignItems: "center",
           }}
         >
           {activeTabDoc && (

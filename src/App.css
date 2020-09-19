@@ -126,4 +126,9 @@ button:active {
 
 .react-tabs__tab-list {
   margin: 0px !important;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* height: 80px; */
+  white-space: nowrap;
 }
