@@ -314,6 +314,7 @@ function App() {
                   backgroundColor: activeTabDoc && activeTabDoc.doc.color,
                   color: "black !important",
                 }}
+                autoComplete={"off"}
               />
               <div className="btn-container">
                 <Button

@@ -131,4 +131,18 @@ button:active {
   overflow-y: hidden;
   /* height: 80px; */
   white-space: nowrap;
+  border: none;
+}
+
+.react-tabs__tab {
+  padding: 13px;
+  border-radius: 15px 15px 0 0;
+}
+
+.popup-content {
+  position: absolute;
+  z-index: 999;
+  pointer-events: auto;
+  top: 54px;
+  left: 220px !important;
 }
