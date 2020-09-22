@@ -9,6 +9,8 @@ import Button from "./components/Button";
 import { useCrud } from "./hooks/useCrud";
 import { useCrudTabs } from "./hooks/useCrudTabs";
 import { useGetAsyncDocs } from "./hooks/useGetAsyncDocs";
+import { Resizable, ResizableBox } from "react-resizable";
+import "react-resizable/css/styles.css";
 
 const Tooltip = (props) => (
   <Popup
@@ -210,153 +212,165 @@ function App() {
   };
 
   return (
-    <div className="main-container">
-      <Tabs
-        selectedIndex={tabIndex}
-        onSelect={(tabIndex) => {
-          setTabIndex(tabIndex);
-          setActiveTabDoc(response.rows[tabIndex]);
-        }}
-      >
-        <TabList>
-          {todos &&
-            todos.length > 0 &&
-            todos.map((item) => (
-              <Tab style={{ backgroundColor: item.doc.color }}>
-                <div
-                  className="d-flex"
-                  style={{
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    contentEditable={true}
-                    onInput={(e) => {
-                      setTabTitle(e.currentTarget.textContent);
-                    }}
-                    onBlur={() => {
-                      console.log(tabTitle);
-                      if (tabTitle) {
-                        activeTabDoc.doc.title = tabTitle;
-                        editTab(activeTabDoc.doc);
-                        setEditable(false);
-                      }
-                    }}
-                  >
-                    {item.doc.title}
-                  </div>
-
-                  <div
-                    onClick={() => {
-                      removeTab(item.doc);
-                      refresh();
-                      window.location.reload();
-                    }}
-                    style={{
-                      paddingLeft: 20,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <img
-                      src={require("./cross.png")}
-                      style={{ width: 15, height: 15 }}
-                    />
-                  </div>
-                </div>
-              </Tab>
-            ))}
-
-          <img
-            onClick={handleTabAdd}
-            style={{ height: 20 }}
-            src={require("./addTodo.png")}
-          />
-        </TabList>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            padding: 10,
-            backgroundColor: activeTabDoc && activeTabDoc.doc.color,
-            justifyContent: "flex-end",
-            alignItems: "center",
-          }}
-        >
-          {activeTabDoc && (
-            <Tooltip color={activeTabDoc.doc.color} updateColor={updateColor} />
-          )}
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "80% 20%",
-            backgroundColor: activeTabDoc && activeTabDoc.doc.color,
-            padding: "0 10px",
-          }}
-        >
-          {response && activeTabDoc ? (
-            <>
-              <input
-                id="todo-description"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleTodoAdd();
-                }}
-                type="text"
-                onChange={(e) => handleChange(e)}
-                placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
-                value={inputValue}
-                style={{
-                  backgroundColor: activeTabDoc && activeTabDoc.doc.color,
-                  color: "black !important",
-                }}
-                autoComplete={"off"}
-              />
-              <div className="btn-container">
-                <Button
-                  id="add-todo"
-                  onClick={handleTodoAdd}
-                  className="add-btn"
-                  btnText={editDoc ? "Update" : "Add"}
-                />
-              </div>
-            </>
-          ) : null}
-        </div>
-        {todos && todos.length > 0 ? (
-          todos.map((item) => {
-            return (
-              <table
-                className="table-container"
-                style={{ backgroundColor: item.doc.color }}
-              >
-                <TabPanel>
-                  {item.doc.todos &&
-                    item.doc.todos.map((item) => {
-                      return <Item {...item} doc={activeTabDoc.doc} />;
-                    })}
-                </TabPanel>
-              </table>
-            );
-          })
-        ) : (
-          <span
-            style={{
-              color: "gray",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+    <ResizableBox
+      width={500}
+      height={500}
+      minConstraints={[500, 500]}
+      style={{ border: "1px solid lightgray" }}
+    >
+      <span>
+        <div className="main-container">
+          <Tabs
+            selectedIndex={tabIndex}
+            onSelect={(tabIndex) => {
+              setTabIndex(tabIndex);
+              setActiveTabDoc(response.rows[tabIndex]);
             }}
           >
-            Add Tabs and Todos
-          </span>
-        )}
-      </Tabs>
-    </div>
+            <TabList>
+              {todos &&
+                todos.length > 0 &&
+                todos.map((item) => (
+                  <Tab style={{ backgroundColor: item.doc.color }}>
+                    <div
+                      className="d-flex"
+                      style={{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        contentEditable={true}
+                        onInput={(e) => {
+                          setTabTitle(e.currentTarget.textContent);
+                        }}
+                        onBlur={() => {
+                          console.log(tabTitle);
+                          if (tabTitle) {
+                            activeTabDoc.doc.title = tabTitle;
+                            editTab(activeTabDoc.doc);
+                            setEditable(false);
+                          }
+                        }}
+                      >
+                        {item.doc.title}
+                      </div>
+
+                      <div
+                        onClick={() => {
+                          removeTab(item.doc);
+                          refresh();
+                          window.location.reload();
+                        }}
+                        style={{
+                          paddingLeft: 20,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <img
+                          src={require("./cross.png")}
+                          style={{ width: 15, height: 15 }}
+                        />
+                      </div>
+                    </div>
+                  </Tab>
+                ))}
+
+              <img
+                onClick={handleTabAdd}
+                style={{ height: 20 }}
+                src={require("./addTodo.png")}
+              />
+            </TabList>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                padding: 10,
+                backgroundColor: activeTabDoc && activeTabDoc.doc.color,
+                justifyContent: "flex-end",
+                alignItems: "center",
+              }}
+            >
+              {activeTabDoc && (
+                <Tooltip
+                  color={activeTabDoc.doc.color}
+                  updateColor={updateColor}
+                />
+              )}
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "80% 20%",
+                backgroundColor: activeTabDoc && activeTabDoc.doc.color,
+                padding: "0 10px",
+              }}
+            >
+              {response && activeTabDoc ? (
+                <>
+                  <input
+                    id="todo-description"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleTodoAdd();
+                    }}
+                    type="text"
+                    onChange={(e) => handleChange(e)}
+                    placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
+                    value={inputValue}
+                    style={{
+                      backgroundColor: activeTabDoc && activeTabDoc.doc.color,
+                      color: "black !important",
+                    }}
+                    autoComplete={"off"}
+                  />
+                  <div className="btn-container">
+                    <Button
+                      id="add-todo"
+                      onClick={handleTodoAdd}
+                      className="add-btn"
+                      btnText={editDoc ? "Update" : "Add"}
+                    />
+                  </div>
+                </>
+              ) : null}
+            </div>
+            {todos && todos.length > 0 ? (
+              todos.map((item) => {
+                return (
+                  <table
+                    className="table-container"
+                    style={{ backgroundColor: item.doc.color }}
+                  >
+                    <TabPanel>
+                      {item.doc.todos &&
+                        item.doc.todos.map((item) => {
+                          return <Item {...item} doc={activeTabDoc.doc} />;
+                        })}
+                    </TabPanel>
+                  </table>
+                );
+              })
+            ) : (
+              <span
+                style={{
+                  color: "gray",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                Add Tabs and Todos
+              </span>
+            )}
+          </Tabs>
+        </div>
+      </span>
+    </ResizableBox>
   );
 }
 
