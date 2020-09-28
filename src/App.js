@@ -280,7 +280,7 @@ function App() {
 
               <img
                 onClick={handleTabAdd}
-                style={{ height: 20 }}
+                style={{ height: 35, position: "relative", top: 12 }}
                 src={require("./addTodo.png")}
               />
             </TabList>
@@ -323,7 +323,7 @@ function App() {
                     placeholder={`Add Todo Item to ${activeTabDoc.doc.title}`}
                     value={inputValue}
                     style={{
-                      backgroundColor: activeTabDoc && activeTabDoc.doc.color,
+                      backgroundColor: "transparent",
                       color: "black !important",
                     }}
                     autoComplete={"off"}
