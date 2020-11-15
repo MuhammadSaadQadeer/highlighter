@@ -1,7 +1,7 @@
 import { usePouchDb } from "./usePouchDb";
 
-export function useCrudTabs() {
-  const db = usePouchDb();
+export function useCrudTabs(dbName) {
+  const db = usePouchDb(dbName);
 
   function addTab(obj) {
     var tab = {

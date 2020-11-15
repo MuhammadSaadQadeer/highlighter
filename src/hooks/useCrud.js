@@ -1,7 +1,7 @@
 import { usePouchDb } from "./usePouchDb";
 
-export function useCrud() {
-  const db = usePouchDb();
+export function useCrud(dbName) {
+  const db = usePouchDb(dbName);
 
   function addTodo(doc) {
     // var todo = {

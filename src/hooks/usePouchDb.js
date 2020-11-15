@@ -1,6 +1,6 @@
 import PouchDB from "pouchdb-browser";
 
-export function usePouchDb() {
-  let db = new PouchDB("todo_");
+export function usePouchDb(dbName) {
+  let db = new PouchDB(dbName);
   return db;
 }

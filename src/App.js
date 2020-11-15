@@ -64,9 +64,19 @@ function App() {
   const [tabIndex, setTabIndex] = useState(0);
   const [activeTabDoc, setActiveTabDoc] = useState(null);
 
-  const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud();
-  const { addTab, editTab, removeTab } = useCrudTabs();
+  const { addTodo, getDocPromise, deleteTodo, updateTodo } = useCrud("_todo");
+
+  const {
+    addTodo: addGlobalInfo,
+    getDocPromise: getGlobalInfoPromise,
+    deleteTodo: deleteGlobalInfo,
+    updateTodo: updateGlobalInfo,
+  } = useCrud("_global_info");
+  const { addTab, editTab, removeTab } = useCrudTabs("_todo");
   const { getLatestDocs, response } = useGetAsyncDocs(getDocPromise);
+  const { getLatestGlobalInfo, globalResponse } = useGetAsyncDocs(
+    getGlobalInfoPromise
+  );
 
   const [editable, setEditable] = useState(false);
 
@@ -133,6 +143,9 @@ function App() {
     setEditDoc(null);
   }
 
+  function refreshGlobalInfo() {
+    getLatestGlobalInfo();
+  }
   const Item = ({ completed, title, _id, doc }) => {
     return (
       <>
@@ -217,6 +230,12 @@ function App() {
       height={500}
       minConstraints={[500, 500]}
       style={{ border: "1px solid lightgray" }}
+      onResizeStop={
+        ((e) => {},
+        (data) => {
+          console.log({ data });
+        })
+      }
     >
       <span>
         <div className="main-container">
